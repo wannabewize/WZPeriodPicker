@@ -144,25 +144,6 @@ public extension WZYearMonth {
 }
 
 public extension WZYearMonth {
-    func isBefore(_ other: WZYearMonth) -> Bool? {
-        guard granularity == other.granularity else {
-            return nil
-        }
-
-        switch (self, other) {
-        case let (.year(y1), .year(y2)):
-            return y1 < y2
-
-        case let (.yearMonth(y1, m1), .yearMonth(y2, m2)):
-            return (y1, m1) < (y2, m2)
-
-        default:
-            return nil
-        }
-    }
-}
-
-public extension WZYearMonth {
 
     func compare(_ other: WZYearMonth) -> ComparisonResult? {
 
@@ -199,34 +180,5 @@ public extension WZYearMonth {
 
     func isAfter(_ other: WZYearMonth) -> Bool {
         compare(other) == .orderedDescending
-    }
-}
-
-// Bounded navigation helpers (no WZYearMonth dependency required)
-public extension WZYearMonth {
-    func previousWithin(rangeStart: WZYearMonth, rangeEnd: WZYearMonth) -> WZYearMonth {
-        let prev = previous()
-        if prev == self { return self }
-        if prev.isBefore(rangeStart) { return self }
-        return prev
-    }
-
-    func nextWithin(rangeStart: WZYearMonth, rangeEnd: WZYearMonth) -> WZYearMonth {
-        let nxt = next()
-        if nxt == self { return self }
-        if nxt.isAfter(rangeEnd) { return self }
-        return nxt
-    }
-
-    func canMovePrevious(rangeStart: WZYearMonth) -> Bool {
-        let prev = previous()
-        if prev == self { return false }
-        return !prev.isBefore(rangeStart)
-    }
-
-    func canMoveNext(rangeEnd: WZYearMonth) -> Bool {
-        let nxt = next()
-        if nxt == self { return false }
-        return !nxt.isAfter(rangeEnd)
     }
 }
