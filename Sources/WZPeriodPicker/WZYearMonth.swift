@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct YearMonth: Equatable, Comparable, Hashable {
+public struct WZYearMonth: Equatable, Comparable, Hashable {
     public let year: Int
     public let month: Int
     
@@ -17,7 +17,7 @@ public struct YearMonth: Equatable, Comparable, Hashable {
         self.month = month
     }
     
-    public static func < (lhs: YearMonth, rhs: YearMonth) -> Bool {
+    public static func < (lhs: WZYearMonth, rhs: WZYearMonth) -> Bool {
         if lhs.year != rhs.year {
             return lhs.year < rhs.year
         }
@@ -25,19 +25,19 @@ public struct YearMonth: Equatable, Comparable, Hashable {
     }
     
     // 현재 날짜 기준 생성
-    public static var current: YearMonth {
+    public static var current: WZYearMonth {
         let now = Date()
-        return YearMonth(
+        return WZYearMonth(
             year: Calendar.current.component(.year, from: now),
             month: Calendar.current.component(.month, from: now)
         )
     }
 }
 
-extension YearMonth {
+extension WZYearMonth {
     /// 지정된 개월 수만큼 이동한 새로운 YearMonth 객체를 반환합니다.
     /// - Parameter value: 더하거나 뺄 개월 수 (음수 가능)
-    public func adding(months value: Int) -> YearMonth {
+    public func adding(months value: Int) -> WZYearMonth {
         // 전체 개월 수로 변환하여 계산
         let totalMonths = (year * 12) + (month - 1) + value
         
@@ -46,27 +46,27 @@ extension YearMonth {
         
         // 음수 나머지 처리를 위해 (Swift의 % 연산자 특성 대응)
         if newMonth <= 0 {
-            return YearMonth(year: newYear - 1, month: newMonth + 12)
+            return WZYearMonth(year: newYear - 1, month: newMonth + 12)
         }
         
-        return YearMonth(year: newYear, month: newMonth)
+        return WZYearMonth(year: newYear, month: newMonth)
     }
     
     /// 다음 달로 이동
-    public func nextMonth() -> YearMonth {
+    public func nextMonth() -> WZYearMonth {
         adding(months: 1)
     }
     
     /// 이전 달로 이동
-    public func previousMonth() -> YearMonth {
+    public func previousMonth() -> WZYearMonth {
         adding(months: -1)
     }
 }
 
 // Date 변환 편의 기능
 extension Date {
-    var toYearMonth: YearMonth {
+    var toYearMonth: WZYearMonth {
         let components = Calendar.current.dateComponents([.year, .month], from: self)
-        return YearMonth(year: components.year ?? 0, month: components.month ?? 1)
+        return WZYearMonth(year: components.year ?? 0, month: components.month ?? 1)
     }
 }

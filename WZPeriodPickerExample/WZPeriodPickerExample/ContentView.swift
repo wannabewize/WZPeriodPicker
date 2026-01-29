@@ -9,17 +9,21 @@ import SwiftUI
 import WZPeriodPicker
 
 struct ContentView: View {
-    @State private var selectedYear: Int? = YearMonth.current.year
-    @State private var selectedMonth: Int? = YearMonth.current.month
+    @State private var selectedYear: Int? = WZYearMonth.current.year
+    @State private var selectedMonth: Int? = WZYearMonth.current.month
+    @State private var selectedPeriod = WZPeriod(yearMonth: Date())!
     
     // 데이터 범위 설정
-    let startDate = YearMonth(year: 2023, month: 1)
-    let endDate = YearMonth.current
+    let startDate = WZYearMonth(year: 2023, month: 1)
+    let endDate = WZYearMonth.current
     
     var body: some View {
         VStack(spacing: 20) {
             Text("선택된 기간: \(displayText)")
                 .font(.headline)
+            Text("선택된 Period: \(selectedPeriod.description)")
+                .font(.headline)
+
             
             HStack(spacing: 15) {
                 // 이전 달 이동 버튼
@@ -35,6 +39,7 @@ struct ContentView: View {
                 WZPeriodPicker(
                     selectedYear: $selectedYear,
                     selectedMonth: $selectedMonth,
+                    selectedPeriod: $selectedPeriod,
                     from: startDate,
                     to: endDate
                 )
@@ -65,9 +70,9 @@ struct ContentView: View {
 }
 
 extension ContentView {
-    private var currentSelection: YearMonth? {
+    private var currentSelection: WZYearMonth? {
         guard let y = selectedYear, let m = selectedMonth else { return nil }
-        return YearMonth(year: y, month: m)
+        return WZYearMonth(year: y, month: m)
     }
     
     private var canMovePrevious: Bool {
@@ -86,6 +91,8 @@ extension ContentView {
         if target >= startDate {
             updateSelection(to: target)
         }
+        
+        selectedPeriod = selectedPeriod.previous()
     }
     
     private func moveToNext() {
@@ -94,9 +101,11 @@ extension ContentView {
         if target <= endDate {
             updateSelection(to: target)
         }
+        
+        selectedPeriod = selectedPeriod.next()
     }
     
-    private func updateSelection(to ym: YearMonth) {
+    private func updateSelection(to ym: WZYearMonth) {
         selectedYear = ym.year
         selectedMonth = ym.month
     }

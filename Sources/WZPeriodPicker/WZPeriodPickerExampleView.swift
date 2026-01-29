@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct WZPeriodPickerExampleView: View {
-    @State private var selectedYear: Int? = YearMonth.current.year
-    @State private var selectedMonth: Int? = YearMonth.current.month
+    @State private var selectedYear: Int? = WZYearMonth.current.year
+    @State private var selectedMonth: Int? = WZYearMonth.current.month
+    @State private var selectedPeriod: WZPeriod = WZPeriod(yearMonth: Date())!
     
     // 데이터 범위 설정
-    let startDate = YearMonth(year: 2023, month: 1)
-    let endDate = YearMonth.current
+    let startDate = WZYearMonth(year: 2023, month: 1)
+    let endDate = WZYearMonth.current
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("선택된 기간: \(displayText)")
+            Text("선택된 기간: \(displayText),  \(selectedPeriod.description)")
                 .font(.headline)
             
             HStack(spacing: 15) {
@@ -34,6 +35,7 @@ struct WZPeriodPickerExampleView: View {
                 WZPeriodPicker(
                     selectedYear: $selectedYear,
                     selectedMonth: $selectedMonth,
+                    selectedPeriod: $selectedPeriod,
                     from: startDate,
                     to: endDate
                 )
@@ -63,9 +65,9 @@ struct WZPeriodPickerExampleView: View {
 }
 
 extension WZPeriodPickerExampleView {
-    private var currentSelection: YearMonth? {
+    private var currentSelection: WZYearMonth? {
         guard let y = selectedYear, let m = selectedMonth else { return nil }
-        return YearMonth(year: y, month: m)
+        return WZYearMonth(year: y, month: m)
     }
     
     private var canMovePrevious: Bool {
@@ -83,6 +85,9 @@ extension WZPeriodPickerExampleView {
         if target >= startDate {
             updateSelection(to: target)
         }
+        
+        let newPeriod = selectedPeriod.previous()
+        selectedPeriod = newPeriod
     }
     
     private func moveToNext() {
@@ -90,10 +95,13 @@ extension WZPeriodPickerExampleView {
         if target <= endDate {
             updateSelection(to: target)
         }
+        
+        let newPeriod = selectedPeriod.next()
+        selectedPeriod = newPeriod
     }
     
     // 4. 핵심: 연/월 바인딩을 한 번에 업데이트하여 '전체' 상태를 스킵
-    private func updateSelection(to ym: YearMonth) {
+    private func updateSelection(to ym: WZYearMonth) {
         selectedYear = ym.year
         selectedMonth = ym.month
     }

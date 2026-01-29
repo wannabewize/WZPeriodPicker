@@ -9,10 +9,10 @@
 import Foundation
 
 public struct PeriodCalculator {
-    public let rangeStart: YearMonth
-    public let rangeEnd: YearMonth
+    public let rangeStart: WZYearMonth
+    public let rangeEnd: WZYearMonth
     
-    public init(rangeStart: YearMonth, rangeEnd: YearMonth) {
+    public init(rangeStart: WZYearMonth, rangeEnd: WZYearMonth) {
         self.rangeStart = rangeStart
         self.rangeEnd = rangeEnd
     }
@@ -30,23 +30,23 @@ public struct PeriodCalculator {
         return Array(startMonth...endMonth).reversed()
     }
     
-    public func canMovePrevious(from current: YearMonth?) -> Bool {
+    public func canMovePrevious(from current: WZYearMonth?) -> Bool {
         guard let current = current else { return true }
         return current > rangeStart
     }
     
-    public func canMoveNext(from current: YearMonth?) -> Bool {
+    public func canMoveNext(from current: WZYearMonth?) -> Bool {
         guard let current = current else { return true }
         return current < rangeEnd
     }
     
-    public func previousMonth(from current: YearMonth?) -> YearMonth {
+    public func previousMonth(from current: WZYearMonth?) -> WZYearMonth {
         guard let current = current else { return rangeEnd }
         let prev = current.previousMonth()
         return prev >= rangeStart ? prev : current
     }
     
-    public func nextMonth(from current: YearMonth?) -> YearMonth {
+    public func nextMonth(from current: WZYearMonth?) -> WZYearMonth {
         guard let current = current else { return rangeStart }
         let next = current.nextMonth()
         return next <= rangeEnd ? next : current
