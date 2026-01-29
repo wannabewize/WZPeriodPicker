@@ -11,8 +11,8 @@ struct WZPeriodPickerExampleView: View {
     @State private var selectedPeriod: WZPeriod = WZPeriod(yearMonth: Date())!
     
     // 데이터 범위 설정
-    let startDate = WZYearMonth(year: 2023, month: 5)
-    let endDate = WZYearMonth.current
+    let startDate = WZPeriod(year: 2023, month: 5)
+    let endDate = WZPeriod(yearMonth: Date())!
     
     var body: some View {
         VStack(spacing: 20) {

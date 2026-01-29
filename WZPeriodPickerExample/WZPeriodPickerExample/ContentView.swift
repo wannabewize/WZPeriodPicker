@@ -12,13 +12,14 @@ struct ContentView: View {
     @State private var selectedPeriod = WZPeriod(yearMonth: Date())!
     
     // 데이터 범위 설정
-    let startDate = WZYearMonth(year: 2023, month: 1)
-    let endDate = WZYearMonth.current
+    let startDate = WZPeriod(year: 2023, month: 5)
+    let endDate = WZPeriod(yearMonth: Date())!
     
     var body: some View {
         VStack(spacing: 20) {
             Text("\(selectedPeriod.description)")
                 .font(.headline)
+            Text("During : \(startDate.description) ~ \(endDate.description)")
 
             
             HStack(spacing: 15) {

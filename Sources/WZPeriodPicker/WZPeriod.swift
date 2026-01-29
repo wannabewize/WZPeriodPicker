@@ -66,6 +66,15 @@ public extension WZPeriod {
             return nil
         }
     }
+    
+    var monthComponent: Int? {
+        switch self {
+        case .yearMonth(_, let m):
+            return m
+        default:
+            return nil
+        }
+    }
 
     var yearMonthComponent: (Int, Int)? {
         switch self {

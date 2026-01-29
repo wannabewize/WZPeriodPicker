@@ -3,14 +3,14 @@ import SwiftUI
 public struct WZPeriodPicker: View {
     @Binding var selectedPeriod: WZPeriod
     
-    let from: WZYearMonth
-    let to: WZYearMonth
+    let from: WZPeriod
+    let to: WZPeriod
     let allOptionText: String
     
     public init(
         selectedPeriod: Binding<WZPeriod>,
-        from: WZYearMonth,
-        to: WZYearMonth,
+        from: WZPeriod,
+        to: WZPeriod,
         allOptionText: String = "all"
     ) {
         self._selectedPeriod = selectedPeriod
@@ -75,7 +75,7 @@ public struct WZPeriodPicker: View {
                 selectedPeriod = .yearMonth(year: y, month: m)
             case (nil, let m?):
                 // no year selected but month set -> pick earliest year in range
-                let y = from.year
+                let y = from.yearComponent!
                 selectedPeriod = .yearMonth(year: y, month: m)
             }
         })
@@ -127,16 +127,23 @@ public struct WZPeriodPicker: View {
     }
     
     private var availableYears: [Int] {
-        Array(from.year...to.year).reversed()
+        Array(from.yearComponent!...to.yearComponent!).reversed()
     }
     
     private func availableMonths(for year: Int?) -> [Int] {
         guard let year = year else { return [] }
         
-        let startMonth = (year == from.year) ? from.month : 1
-        let endMonth = (year == to.year) ? to.month : 12
-        
-        return Array(startMonth...endMonth).reversed()
+        if let startYear = from.yearComponent, let endYear = to.yearComponent {
+            if let startMonth = from.monthComponent, let endMonth = to.monthComponent {
+                if startYear == endYear {
+                    return Array(startMonth...endMonth).reversed()
+                }
+                else {
+                    return Array(startMonth...12).reversed()
+                }
+            }
+        }
+        return []
     }
 }
 
@@ -145,7 +152,7 @@ public struct WZPeriodPicker: View {
 
     WZPeriodPicker(
         selectedPeriod: $period,
-        from: WZYearMonth(year: 2020, month: 1),
-        to: WZYearMonth.current
+        from: WZPeriod(year: 2020, month: 1),
+        to: WZPeriod(yearMonth: Date())!
     )
 }
