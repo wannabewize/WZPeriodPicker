@@ -11,7 +11,7 @@ public struct WZPeriodPicker: View {
         selectedPeriod: Binding<WZPeriod>,
         from: WZYearMonth,
         to: WZYearMonth,
-        allOptionText: String = "전체"
+        allOptionText: String = "all"
     ) {
         self._selectedPeriod = selectedPeriod
         self.from = from
