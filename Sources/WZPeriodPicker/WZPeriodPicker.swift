@@ -1,8 +1,6 @@
 import SwiftUI
 
 public struct WZPeriodPicker: View {
-    @Binding var selectedYear: Int?
-    @Binding var selectedMonth: Int?
     @Binding var selectedPeriod: WZPeriod
     
     let from: WZYearMonth
@@ -10,15 +8,11 @@ public struct WZPeriodPicker: View {
     let allOptionText: String
     
     public init(
-        selectedYear: Binding<Int?>,
-        selectedMonth: Binding<Int?>,
         selectedPeriod: Binding<WZPeriod>,
         from: WZYearMonth,
         to: WZYearMonth,
         allOptionText: String = "전체"
     ) {
-        self._selectedYear = selectedYear
-        self._selectedMonth = selectedMonth
         self._selectedPeriod = selectedPeriod
         self.from = from
         self.to = to
@@ -27,52 +21,15 @@ public struct WZPeriodPicker: View {
     
     public var body: some View {
         HStack(spacing: 8) {
-            // 연도 선택
-            yearPicker
-            
-            // 월 선택 (연도가 선택된 경우에만 노출하거나 비활성화)
-            if selectedYear != nil {
-                monthPicker
-            }
-            
-            // selectedPeriod 기반 선택기 (추가 표시)
-            Divider()
-                .frame(height: 28)
-
-            VStack(spacing: 4) {
-                Text("Period 기반")
-                    .font(.caption)
-                periodYearPicker
-                if periodSelectedYear != nil {
-                    periodMonthPicker
-                }
+            // Period 기반 선택만 노출
+            periodYearPicker
+            if periodSelectedYear != nil {
+                periodMonthPicker
             }
         }
     }
     
-    private var yearPicker: some View {
-        Picker("Year", selection: $selectedYear) {
-            Text(allOptionText).tag(nil as Int?)
-            ForEach(availableYears, id: \.self) { year in
-                Text("\(String(year))년").tag(year as Int?)
-            }
-        }
-        .pickerStyle(.menu)
-        .onChange(of: selectedYear) { _, _ in
-            // 연도가 바뀌거나 전체로 돌아가면 월 선택 초기화
-            selectedMonth = nil
-        }
-    }
-    
-    private var monthPicker: some View {
-        Picker("Month", selection: $selectedMonth) {
-            Text(allOptionText).tag(nil as Int?)
-            ForEach(availableMonths(for: selectedYear), id: \.self) { month in
-                Text("\(month)월").tag(month as Int?)
-            }
-        }
-        .pickerStyle(.menu)
-    }
+    // 기존 year/month 바인딩 대신 period에서 파생한 바인딩을 사용
 
     // MARK: - Period-driven bindings & pickers
 
@@ -93,25 +50,15 @@ public struct WZPeriodPicker: View {
 
     private var periodYearBinding: Binding<Int?> {
         Binding(get: { periodSelectedYear }, set: { newYear in
-            switch selectedPeriod {
-            case .all:
-                if let y = newYear {
-                    selectedPeriod = .year(y)
-                } else {
-                    selectedPeriod = .all
-                }
-            case .year(_):
-                if let y = newYear {
-                    selectedPeriod = .year(y)
-                } else {
-                    selectedPeriod = .all
-                }
-            case .yearMonth(_, let m):
-                if let y = newYear {
+            // Update period based on new year selection while preserving month when possible
+            if let y = newYear {
+                if let m = periodSelectedMonth {
                     selectedPeriod = .yearMonth(year: y, month: m)
                 } else {
-                    selectedPeriod = .all
+                    selectedPeriod = .year(y)
                 }
+            } else {
+                selectedPeriod = .all
             }
         })
     }
@@ -173,13 +120,9 @@ public struct WZPeriodPicker: View {
 }
 
 #Preview {
-    @Previewable @State var year: Int? = 2024
-    @Previewable @State var month: Int? = nil // 2024년 전체 선택 상태
     @Previewable @State var period: WZPeriod = .yearMonth(year: 2020, month: 10)
 
     WZPeriodPicker(
-        selectedYear: $year,
-        selectedMonth: $month,
         selectedPeriod: $period,
         from: WZYearMonth(year: 2020, month: 1),
         to: WZYearMonth.current

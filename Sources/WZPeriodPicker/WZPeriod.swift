@@ -47,11 +47,11 @@ public enum WZPeriod: Equatable {
     public var description: String {
         switch self {
         case .all:
-            return "All"
+            return "all"
         case .year(let year):
-            return "Year: \(year)"
+            return "\(year)"
         case .yearMonth(let year, let month):
-            return "YearMonth: \(year)-\(month)"
+            return "\(year)-\(month)"
         }
     }
 }
