@@ -23,7 +23,7 @@ struct ContentView: View {
     
     @State private var period3 = WZPeriod(
         selected: .all,
-        minimum: .yearMonth(year: 2023, month: 5),
+        minimum: .yearMonth(year: 1999, month: 5),
         maximum: .yearMonth(year: 2026, month: 10)
     )
 
@@ -121,6 +121,7 @@ struct ContentView: View {
                     
                     // WZPeriodPicker 사용
                     WZPeriodPicker(period: $period3, allowAllPeriod: true, allowYearAll: true)
+                        .font(.headline)
                     
                     // 다음 달 이동 버튼
                     Button(action: { period3.moveToNextIfPossible() }) {

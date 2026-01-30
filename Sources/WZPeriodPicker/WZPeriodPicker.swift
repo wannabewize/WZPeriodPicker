@@ -3,6 +3,8 @@ import SwiftUI
 public struct WZPeriodPicker: View {
     @Binding var period: WZPeriod
 
+    @Environment(\.font) private var inheritedFont: Font?
+
     var minimum: WZYearMonth { period.minimum }
     var maximum: WZYearMonth { period.maximum }
 
@@ -87,45 +89,90 @@ public struct WZPeriodPicker: View {
     }
 
     private var periodYearPicker: some View {
-        Picker("Period Year", selection: periodYearBinding) {
+        // Use Menu to allow per-item text modifiers and consistent label styling
+        Menu {
             if allowAllPeriod {
-                Text(allOptionText)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    .tag(nil as Int?)
+                Button(action: { periodYearBinding.wrappedValue = nil }) {
+                    Text(allOptionText)
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
+
             ForEach(availableYears, id: \.self) { year in
-                Text(formattedYear(year))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    .tag(year as Int?)
+                Button(action: { periodYearBinding.wrappedValue = year }) {
+                    Text(formattedYear(year))
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
+        } label: {
+            HStack(spacing: 6) {
+                if let y = periodSelectedYear {
+                    Text(formattedYear(y))
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                } else if allowAllPeriod {
+                    Text(allOptionText)
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                } else {
+                    Text("")
+                }
+                Image(systemName: "chevron.down")
+            }
+            .frame(maxWidth: .infinity)
         }
-        .pickerStyle(.menu)
-        .onChange(of: periodSelectedYear) { _, _ in
-            // when year changes via period picker, clear month selection
-            // handled by binding setter above
-        }
-        .frame(maxWidth: .infinity)
     }
 
     private var periodMonthPicker: some View {
-        Picker("Period Month", selection: periodMonthBinding) {
+        // Use a Menu instead of a Picker so item text modifiers (lineLimit, minimumScaleFactor)
+        // are respected and we can constrain the label width.
+        Menu {
             if allowYearAll {
-                Text(allOptionText)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    .tag(nil as Int?)
+                Button(action: { periodMonthBinding.wrappedValue = nil }) {
+                    Text(allOptionText)
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
+
             ForEach(availableMonths(for: periodSelectedYear), id: \.self) { month in
-                Text(localizedMonthName(for: month))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    .tag(month as Int?)
+                Button(action: { periodMonthBinding.wrappedValue = month }) {
+                    Text(localizedMonthName(for: month))
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
+        } label: {
+            HStack(spacing: 6) {
+                if let m = periodSelectedMonth {
+                    Text(localizedMonthName(for: m))
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                } else if allowYearAll {
+                    Text(allOptionText)
+                        .font(inheritedFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                } else {
+                    Text("")
+                }
+                Image(systemName: "chevron.down")
+            }
+            .frame(maxWidth: .infinity)
         }
-        .pickerStyle(.menu)
-        .frame(maxWidth: .infinity)
     }
 
     // Use system locale for month names and year formatting
