@@ -136,17 +136,6 @@ struct ContentView: View {
             .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemBackground)).shadow(radius: 2))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            print("--- Locale debug ---")
-            print("Locale.current.identifier:", Locale.current.identifier)
-            print("Locale.current.languageCode:", Locale.current.languageCode ?? "nil")
-            print("Locale.current.regionCode:", Locale.current.regionCode ?? "nil")
-            print("Locale.preferredLanguages:", Locale.preferredLanguages)
-            print("Bundle.main.preferredLocalizations:", Bundle.main.preferredLocalizations)
-            print("Bundle.main.localizations:", Bundle.main.localizations)
-            print("CFBundleDevelopmentRegion:", Bundle.main.object(forInfoDictionaryKey: "CFBundleDevelopmentRegion") as? String ?? "nil")
-            print("---------------------")
-        }
     }
 }
 

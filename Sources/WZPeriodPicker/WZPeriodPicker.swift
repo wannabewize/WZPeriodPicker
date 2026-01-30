@@ -3,8 +3,6 @@ import SwiftUI
 public struct WZPeriodPicker: View {
     @Binding var period: WZPeriod
 
-    @Environment(\.font) private var inheritedFont: Font?
-
     var minimum: WZYearMonth { period.minimum }
     var maximum: WZYearMonth { period.maximum }
 
@@ -92,14 +90,12 @@ public struct WZPeriodPicker: View {
         Picker("Period Year", selection: periodYearBinding) {
             if allowAllPeriod {
                 Text(allOptionText)
-                    .font(inheritedFont)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                     .tag(nil as Int?)
             }
             ForEach(availableYears, id: \.self) { year in
                 Text(formattedYear(year))
-                    .font(inheritedFont)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                     .tag(year as Int?)
@@ -116,14 +112,12 @@ public struct WZPeriodPicker: View {
         Picker("Period Month", selection: periodMonthBinding) {
             if allowYearAll {
                 Text(allOptionText)
-                    .font(inheritedFont)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                     .tag(nil as Int?)
             }
             ForEach(availableMonths(for: periodSelectedYear), id: \.self) { month in
                 Text(localizedMonthName(for: month))
-                    .font(inheritedFont)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                     .tag(month as Int?)
@@ -151,6 +145,8 @@ public struct WZPeriodPicker: View {
         df.setLocalizedDateFormatFromTemplate("y")
         return df.string(from: date)
     }
+
+    
 
     private var availableYears: [Int] {
         Array(minimum.yearComponent!...maximum.yearComponent!).reversed()
@@ -184,3 +180,5 @@ public struct WZPeriodPicker: View {
         period: $period
     )
 }
+
+ 
