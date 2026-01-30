@@ -3,8 +3,10 @@ import SwiftUI
 public struct WZPeriodPicker: View {
     @Binding var period: WZPeriod
 
+    @Environment(\.font) private var inheritedFont: Font?
+
     var minimum: WZYearMonth { period.minimum }
-    var maxmum: WZYearMonth { period.maximum }
+    var maximum: WZYearMonth { period.maximum }
 
     let allOptionText: String
     let allowAllPeriod: Bool
@@ -30,12 +32,10 @@ public struct WZPeriodPicker: View {
                 periodMonthPicker
             }
         }
+        .fixedSize(horizontal: true, vertical: false)
     }
 
     // 기존 year/month 바인딩 대신 period에서 파생한 바인딩을 사용
-
-    // MARK: - Period-driven bindings & pickers
-
     private var periodSelectedYear: Int? {
         switch period.selected {
         case .all: return nil
@@ -91,10 +91,18 @@ public struct WZPeriodPicker: View {
     private var periodYearPicker: some View {
         Picker("Period Year", selection: periodYearBinding) {
             if allowAllPeriod {
-                Text(allOptionText).tag(nil as Int?)
+                Text(allOptionText)
+                    .font(inheritedFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .tag(nil as Int?)
             }
             ForEach(availableYears, id: \.self) { year in
-                Text(formattedYear(year)).tag(year as Int?)
+                Text(formattedYear(year))
+                    .font(inheritedFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .tag(year as Int?)
             }
         }
         .pickerStyle(.menu)
@@ -107,10 +115,18 @@ public struct WZPeriodPicker: View {
     private var periodMonthPicker: some View {
         Picker("Period Month", selection: periodMonthBinding) {
             if allowYearAll {
-                Text(allOptionText).tag(nil as Int?)
+                Text(allOptionText)
+                    .font(inheritedFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .tag(nil as Int?)
             }
             ForEach(availableMonths(for: periodSelectedYear), id: \.self) { month in
-                Text(localizedMonthName(for: month)).tag(month as Int?)
+                Text(localizedMonthName(for: month))
+                    .font(inheritedFont)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .tag(month as Int?)
             }
         }
         .pickerStyle(.menu)
@@ -122,15 +138,14 @@ public struct WZPeriodPicker: View {
         let df = DateFormatter()
         df.locale = Locale.current
         let symbols = df.standaloneMonthSymbols
-        return symbols != nil ? symbols![month - 1] : "\(month)"
+        return symbols != nil ? symbols![month - 1] : String(month)
     }
 
     private func formattedYear(_ year: Int) -> String {
-        let calendar = Calendar.current
         var comps = DateComponents()
         comps.year = year
         comps.month = 1
-        guard let date = calendar.date(from: comps) else { return String(year) }
+        guard let date = Calendar.current.date(from: comps) else { return String(year) }
         let df = DateFormatter()
         df.locale = Locale.current
         df.setLocalizedDateFormatFromTemplate("y")
@@ -138,8 +153,7 @@ public struct WZPeriodPicker: View {
     }
 
     private var availableYears: [Int] {
-        // TODO : minimun, maximum 이 없으면?
-        Array(minimum.yearComponent!...maxmum.yearComponent!).reversed()
+        Array(minimum.yearComponent!...maximum.yearComponent!).reversed()
     }
 
     private func availableMonths(for year: Int?) -> [Int] {
@@ -150,8 +164,8 @@ public struct WZPeriodPicker: View {
             return Array(startMonth...12).reversed()
         }
 
-        if year == maxmum.yearComponent {
-            let endMonth = maxmum.monthComponent ?? 12
+        if year == maximum.yearComponent {
+            let endMonth = maximum.monthComponent ?? 12
             return Array(1...endMonth).reversed()
         }
 
