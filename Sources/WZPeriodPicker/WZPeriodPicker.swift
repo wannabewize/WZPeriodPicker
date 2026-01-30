@@ -30,7 +30,7 @@ public struct WZPeriodPicker: View {
                 periodMonthPicker
             }
         }
-        .fixedSize(horizontal: true, vertical: false)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // 기존 year/month 바인딩 대신 period에서 파생한 바인딩을 사용
@@ -106,6 +106,7 @@ public struct WZPeriodPicker: View {
             // when year changes via period picker, clear month selection
             // handled by binding setter above
         }
+        .frame(maxWidth: .infinity)
     }
 
     private var periodMonthPicker: some View {
@@ -124,6 +125,7 @@ public struct WZPeriodPicker: View {
             }
         }
         .pickerStyle(.menu)
+        .frame(maxWidth: .infinity)
     }
 
     // Use system locale for month names and year formatting
