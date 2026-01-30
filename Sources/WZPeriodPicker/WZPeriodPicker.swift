@@ -162,7 +162,7 @@ public struct WZPeriodPicker: View {
 #Preview {
     @Previewable @State var period: WZPeriod = WZPeriod(
         selected: .yearMonth(year: 2020, month: 10),
-        minimum: .yearMonth(year: 2020, month: 1),
+        minimum: .yearMonth(year: 2020, month: 5),
         maximum: .now
     )
 
