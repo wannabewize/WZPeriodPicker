@@ -2,6 +2,8 @@
 
 WZPeriodPicker is a lightweight SwiftUI period picker component.
 
+![Demo screenshot](Assets/screenshot.png)
+
 **Features**
 - Select periods by year and month
 - Optional "All" (entire range) selection
@@ -83,27 +85,6 @@ Bug reports, feature requests and pull requests are welcome.
 ---
 README and example-based tutorial have been added. If you'd like a more detailed API reference, additional examples, or localized versions, tell me which you'd prefer next.
 
-## Screenshots & Demo
+## Demo
 
-Included in the repository (relative to the project root):
-
-- Screenshot: [Assets/screenshot.png](Assets/screenshot.png)
-- Demo video: [Assets/demo.mov](Assets/demo.mov)
-
-You can embed these in the README as follows:
-
-Image (Markdown):
-
-```markdown
-![Demo screenshot](Assets/screenshot.png)
-```
-
-Video (HTML; GitHub will render MP4/MOV inline on supported browsers):
-
-```html
 <video src="Assets/demo.mov" controls style="max-width:100%"></video>
-```
-
-Notes:
-- Keep individual media files small (prefer MP4 over GIF for motion).
-- For large videos prefer external hosting (YouTube/Vimeo) and link/embed to avoid large repo sizes.
