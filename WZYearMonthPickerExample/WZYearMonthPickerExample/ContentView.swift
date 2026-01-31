@@ -120,7 +120,10 @@ struct ContentView: View {
                     .disabled(!period3.canMovePrevious())
                     
                     // WZPeriodPicker 사용
-                    WZYearMonthPicker(period: $period3, allowAllPeriod: true, allowYearAll: true)
+                    WZYearMonthPicker(period: $period3, allowAllPeriod: true, allowYearAll: true) {
+                        Image(systemName: "calendar")
+                            .foregroundStyle(.blue)
+                    }
                         .font(.headline)
                     
                     // 다음 달 이동 버튼

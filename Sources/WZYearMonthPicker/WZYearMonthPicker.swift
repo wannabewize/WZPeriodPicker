@@ -1,7 +1,8 @@
 import SwiftUI
 
-public struct WZYearMonthPicker: View {
+public struct WZYearMonthPicker<Emblem: View>: View {
     @Binding var period: WZPeriod
+    private let emblem: () -> Emblem
 
     @Environment(\.font) private var inheritedFont: Font?
 
@@ -16,16 +17,22 @@ public struct WZYearMonthPicker: View {
         period: Binding<WZPeriod>,
         allowAllPeriod: Bool = false,
         allowYearAll: Bool = false,
-        allOptionText: String = "all"
+        allOptionText: String = "all",
+        @ViewBuilder emblem: @escaping () -> Emblem = { EmptyView() }
     ) {
         self._period = period
         self.allOptionText = allOptionText
         self.allowAllPeriod = allowAllPeriod
         self.allowYearAll = allowYearAll
+        self.emblem = emblem
     }
 
     public var body: some View {
         HStack(spacing: 8) {
+            // optional emblem icon
+            emblem()
+                .frame(width: 20, height: 20)
+
             // Period 기반 선택만 노출
             periodYearPicker
             if periodSelectedYear != nil {
@@ -227,7 +234,10 @@ public struct WZYearMonthPicker: View {
 
     WZYearMonthPicker(
         period: $period
-    )
+    ) {
+        Image(systemName: "calendar")
+            .foregroundStyle(.blue)
+    }
 }
 
  
