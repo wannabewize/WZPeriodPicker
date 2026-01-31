@@ -1,11 +1,32 @@
 import SwiftUI
 
+private struct CompactPickerKey: EnvironmentKey {
+    static let defaultValue: Bool? = nil
+}
+
+public extension EnvironmentValues {
+    var compactPicker: Bool? {
+        get { self[CompactPickerKey.self] }
+        set { self[CompactPickerKey.self] = newValue }
+    }
+}
+
+public extension View {
+    func compactPicker(_ compact: Bool = true) -> some View {
+        environment(\.compactPicker, compact)
+    }
+}
+
 public struct WZYearMonthPicker<Emblem: View>: View {
     @Binding var period: WZPeriod
     private let emblem: () -> Emblem
 
     @Environment(\.font) private var inheritedFont: Font?
 
+    let compact: Bool
+    @Environment(\.compactPicker) private var envCompact: Bool?
+
+    private var isCompact: Bool { envCompact ?? compact }
     var minimum: WZYearMonth { period.minimum }
     var maximum: WZYearMonth { period.maximum }
 
@@ -15,12 +36,14 @@ public struct WZYearMonthPicker<Emblem: View>: View {
 
     public init(
         period: Binding<WZPeriod>,
+        compact: Bool = false,
         allowAllPeriod: Bool = false,
         allowYearAll: Bool = false,
         allOptionText: String = "all",
         @ViewBuilder emblem: @escaping () -> Emblem = { EmptyView() }
     ) {
         self._period = period
+        self.compact = compact
         self.allOptionText = allOptionText
         self.allowAllPeriod = allowAllPeriod
         self.allowYearAll = allowYearAll
@@ -28,18 +51,21 @@ public struct WZYearMonthPicker<Emblem: View>: View {
     }
 
     public var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: isCompact ? 4 : 8) {
             // optional emblem icon
             emblem()
-                .frame(width: 20, height: 20)
+                .frame(width: isCompact ? 16 : 20, height: isCompact ? 16 : 20)
 
             // Period 기반 선택만 노출
             periodYearPicker
             if periodSelectedYear != nil {
                 periodMonthPicker
             }
+            // single trailing chevron (one indicator for the whole control)
+            Image(systemName: "chevron.down")
+                .padding(.leading, isCompact ? 2 : 6)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxHeight: .infinity)
     }
 
     // 기존 year/month 바인딩 대신 period에서 파생한 바인딩을 사용
@@ -124,17 +150,18 @@ public struct WZYearMonthPicker<Emblem: View>: View {
                         .font(inheritedFont)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
+                        .fixedSize(horizontal: isCompact, vertical: false)
                 } else if allowAllPeriod {
                     Text(allOptionText)
                         .font(inheritedFont)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
+                        .fixedSize(horizontal: compact, vertical: false)
                 } else {
                     Text("")
                 }
-                Image(systemName: "chevron.down")
+                
             }
-            .frame(maxWidth: .infinity)
         }
     }
 
@@ -168,17 +195,17 @@ public struct WZYearMonthPicker<Emblem: View>: View {
                         .font(inheritedFont)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
+                        .fixedSize(horizontal: isCompact, vertical: false)
                 } else if allowYearAll {
                     Text(allOptionText)
                         .font(inheritedFont)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
+                        .fixedSize(horizontal: compact, vertical: false)
                 } else {
                     Text("")
-                }
-                Image(systemName: "chevron.down")
+                }                
             }
-            .frame(maxWidth: .infinity)
         }
     }
 

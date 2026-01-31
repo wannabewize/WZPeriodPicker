@@ -125,6 +125,7 @@ struct ContentView: View {
                             .foregroundStyle(.blue)
                     }
                         .font(.headline)
+                        .compactPicker()
                     
                     // 다음 달 이동 버튼
                     Button(action: { period3.moveToNextIfPossible() }) {
